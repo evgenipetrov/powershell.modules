@@ -66,7 +66,7 @@ function Copy-SPTLibrary {
 		$file = $item.File
 		$binary = $file.OpenBinary()
 		
-		$sourceFolder = ((Remove-ArrayMembersAtIndex -array ($item.File.ParentFolder.Url.ToString().Split('/')) -index 0) -join '/')
+		$sourceFolder = ((Remove-ArrayMemberAtIndex -array ($item.File.ParentFolder.Url.ToString().Split('/')) -index 0) -join '/')
 		$targetFolders = $web2.Lists[$DestinationLibraryTitle].Folders | Select-Object -ExpandProperty Url
 		
 		$shouldCreateParentFolder = $true
@@ -76,7 +76,7 @@ function Copy-SPTLibrary {
 		}
 		else {
 			foreach ($folder in $targetFolders) {
-				$destinationFolder = ((Remove-ArrayMembersAtIndex -array ($folder.Split('/')) -index 0) -join '/')
+				$destinationFolder = ((Remove-ArrayMemberAtIndex -array ($folder.Split('/')) -index 0) -join '/')
 				
 				if ($sourceFolder -eq $destinationFolder) {
 					$shouldCreateParentFolder = $false

@@ -10,7 +10,7 @@
 	===========================================================================
 #>
 
-function Remove-ArrayMembersAtIndex {
+function Remove-ArrayMemberAtIndex {
 	param (
 		[object[]]$array,
 		[int]$index
@@ -25,7 +25,7 @@ function Remove-ArrayMembersAtIndex {
 	Write-Output $output
 }
 
-Export-ModuleMember -Function Remove-ArrayMembersAtIndex
+Export-ModuleMember -Function Remove-ArrayMemberAtIndex
 
 
 
