@@ -25,7 +25,24 @@ function Remove-ArrayMemberAtIndex {
 	Write-Output $output
 }
 
-Export-ModuleMember -Function Remove-ArrayMemberAtIndex
+function Log-Message {
+	param
+	(
+		[Parameter(Mandatory = $true)]
+		[string]$Message,
+		[string]$FilePath
+	)
+
+    $currentTime = Get-Date -format 'yyyy-MM-dd hh:mm:ss'
+	
+	if ($FilePath -ne $null) {
+        $output = "[$currentTime] $message"
+		Write-Output $output | Out-File -FilePath $FilePath -Append	
+	}
+}
+
+
+Export-ModuleMember -Function Remove-ArrayMemberAtIndex, Log-Message
 
 
 

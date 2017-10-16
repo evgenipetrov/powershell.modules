@@ -49,7 +49,8 @@ function Copy-SPTLibrary {
 		[String]$DestinationWebUrl,
 		[Parameter(Mandatory = $true)]
 		[String]$DestinationLibraryTitle,
-		[switch]$Overwrite
+		[switch]$Overwrite,
+		[string]$LogFilePath
 	)
 	
 	if ($DestinationWebUrl -eq $null) {
@@ -88,20 +89,36 @@ function Copy-SPTLibrary {
 		if ($shouldCreateParentFolder) {
 			$destinationAbsoluteFolder = $destinationList.RootFolder.ToString() + "/" + $sourceFolder
 			$createdFolder = $web2.Folders.Add($destinationAbsoluteFolder)
-			Write-Verbose "Folder '$($createdFolder.Url)' was not found in the destination library. Created."
+			$message = "Folder '$($createdFolder.Url)' was not found in the destination library. Created."
+			Write-Verbose -Message $message
+			if ($LogFilePath -ne $null) {
+				Log-Message -Message $message -FilePath $LogFilePath
+			}
 		}
 		
 		if ($Overwrite) {
 			$createdFile = $web2.Files.Add($item.File.Url, $binary, $true)
-			Write-Warning "Copied file: '$($createdFile.Url)' onto target file (if existed) with 'Overwrite' flag."
+			$message = "Copied file: '$($createdFile.Url)' onto target file (if existed) with 'Overwrite' flag."
+			Write-Warning -Message $message
+			if ($LogFilePath -ne $null) {
+				Log-Message -Message $message -FilePath $LogFilePath
+			}
 		}
 		else {
 			try {
 				$createdFile = $web2.Files.Add($item.File.Url, $binary)
-				Write-Verbose "Copied file: '$($createdFile.Url)'"
+				$message = "Copied file: '$($createdFile.Url)'"
+				Write-Verbose -Message $message
+				if ($LogFilePath -ne $null) {
+					Log-Message -Message $message -FilePath $LogFilePath
+				}
 			}
 			catch {
-				Write-Error "Destination file: $($item.File.Url) already exists. You did not specify 'Overwrite' flag, so nothing was copied."
+				$message = "Destination file: $($item.File.Url) already exists. You did not specify 'Overwrite' flag, so nothing was copied."
+				Write-Error -Message $message
+				if ($LogFilePath -ne $null) {
+					Log-Message -Message $message -FilePath $LogFilePath
+				}
 			}
 		}
 	}
