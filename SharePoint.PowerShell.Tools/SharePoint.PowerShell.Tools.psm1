@@ -98,12 +98,12 @@ function Copy-SPTLibrary {
             foreach ($folder in $folderArray){
                 $destinationAbsoluteFolder += "/" + $folder
                 $createdFolder = $web2.Folders.Add($destinationAbsoluteFolder)
-			    $message = "Folder '$($createdFolder.Url)' was not found in the destination library. Created."
-			    Write-Verbose -Message $message
-			    if ($LogFilePath -ne $null) {
-				    Log-Message -Message $message -FilePath $LogFilePath
-			    }
             }
+			$message = "Folder '$($createdFolder.Url)' was not found in the destination library. Created."
+			Write-Verbose -Message $message
+			if ($LogFilePath -ne $null) {
+				Log-Message -Message $message -FilePath $LogFilePath
+			}
 		}
 
 		$file = $item.File
