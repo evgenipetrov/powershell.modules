@@ -83,10 +83,9 @@ function Copy-SPTLibrary {
 		else {
 			foreach ($folder in $targetFolders) {
 				$destinationFolder = ((Remove-ArrayMemberAtIndex -array ($folder.Split('/')) -index 0) -join '/')
-				$targetFolder = $null
+				$targetFolder = $folder
 				if ($sourceFolder -eq $destinationFolder) {
 					$shouldCreateParentFolder = $false
-                    $targetFolder = $folder
 					break
 				}
 			}
