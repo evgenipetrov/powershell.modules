@@ -83,9 +83,10 @@ function Copy-SPTLibrary {
 		else {
 			foreach ($folder in $targetFolders) {
 				$destinationFolder = ((Remove-ArrayMemberAtIndex -array ($folder.Split('/')) -index 0) -join '/')
-				
+				$targetFolder = $null
 				if ($sourceFolder -eq $destinationFolder) {
 					$shouldCreateParentFolder = $false
+                    $targetFolder = $folder
 					break
 				}
 			}
@@ -108,9 +109,10 @@ function Copy-SPTLibrary {
 
 		$file = $item.File
 		$binary = $file.OpenBinary()
-		
+        $fileUrl = $targetFolder + "/" + $item.File.Name	
+
 		if ($Overwrite) {
-			$createdFile = $web2.Files.Add($item.File.Url, $binary, $true)
+			$createdFile = $web2.Files.Add($fileUrl, $binary, $true)
 			$message = "Copied file: '$($createdFile.Url)' onto target file (if existed) with 'Overwrite' flag."
 			Write-Warning -Message $message
 			if ($LogFilePath -ne $null) {
