@@ -49,6 +49,7 @@ function Copy-SPTLibrary {
 		[String]$DestinationWebUrl,
 		[Parameter(Mandatory = $true)]
 		[String]$DestinationLibraryTitle,
+        [String[]]$FolderList,
 		[switch]$Overwrite,
 		[string]$LogFilePath
 	)
@@ -63,11 +64,15 @@ function Copy-SPTLibrary {
 	$web2 = Get-SPWeb -Identity $DestinationWebUrl
 	$destinationList = $web2.Lists[$DestinationLibraryTitle]
 	
-	foreach ($item in $sourceList.Items) {
-		$file = $item.File
-		$binary = $file.OpenBinary()
-		
-		$sourceFolder = ((Remove-ArrayMemberAtIndex -array ($item.File.ParentFolder.Url.ToString().Split('/')) -index 0) -join '/')
+	:outer foreach ($item in $sourceList.Items) {
+    
+        $sourceFolder = ((Remove-ArrayMemberAtIndex -array ($item.File.ParentFolder.Url.ToString().Split('/')) -index 0) -join '/')
+
+        foreach($folder in $FolderList){
+            $matchString = "^$folder"
+            if ("/$sourceFolder" -notmatch $matchString){ continue outer }
+        }
+
 		$targetFolders = $web2.Lists[$DestinationLibraryTitle].Folders | Select-Object -ExpandProperty Url
 		
 		$shouldCreateParentFolder = $true
@@ -95,6 +100,9 @@ function Copy-SPTLibrary {
 				Log-Message -Message $message -FilePath $LogFilePath
 			}
 		}
+
+		$file = $item.File
+		$binary = $file.OpenBinary()
 		
 		if ($Overwrite) {
 			$createdFile = $web2.Files.Add($item.File.Url, $binary, $true)
